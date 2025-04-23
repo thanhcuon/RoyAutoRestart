@@ -4,3 +4,17 @@ main: com.github.athanh.royAutoRestart.RoyAutoRestart
 api-version: '1.18'
 authors: [athanh]
 website: roymcvn.com
+commands:
+  royautorestart:
+    description: Plugin commands
+    usage: /<command> <reload|start|infotime> [time] [message] [delay]
+    permission: royautorestart.admin
+    aliases: [rar]
+
+permissions:
+  royautorestart.admin:
+    description: Access to all plugin commands
+    default: op
+  royautorestart.reload:
+    description: Allows reloading the plugin configuration
+    default: op

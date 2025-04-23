@@ -1,0 +1,6 @@
+name: RoyAutoRestart
+version: '1.0'
+main: com.github.athanh.royAutoRestart.RoyAutoRestart
+api-version: '1.18'
+authors: [athanh]
+website: roymcvn.com

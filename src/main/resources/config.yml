@@ -1,0 +1,4 @@
+restart:
+  # Server restart time (24-hour format)
+  hour: 4
+  minute: 0

@@ -1,0 +1,47 @@
+# Restart schedule configuration
+restart-schedule:
+  - 'MONDAY;11:00'     # Monday at 11:00 AM
+  - 'MONDAY;23:00'     # Monday at 11:00 PM
+  - 'TUESDAY;06:00'    # Tuesday at 6:00 AM
+  - 'WEDNESDAY;06:00'  # Wednesday at 6:00 AM
+  - 'THURSDAY;06:00'   # Thursday at 6:00 AM
+  - 'FRIDAY;10:00'     # Friday at 10:00 AM
+  - 'FRIDAY;22:00'     # Friday at 10:00 PM
+  - 'SATURDAY;06:00'   # Saturday at 6:00 AM
+  - 'SUNDAY;06:00'     # Sunday at 6:00 AM
+
+messages:
+  title: '§c§lSERVER RESTART'  # Title displayed during server restart
+  subtitle: '§eRestarting in %time% seconds'  # Subtitle showing time left
+  chat: '§c[Server] Server will restart in %time% seconds!'  # Chat message
+  saving: '§e[Server] Saving world...'  # Message when saving world
+  saved: '§a[Server] World saved successfully!'  # Message after save is complete
+  infotime:
+    header: '§e⌚ Next scheduled restart time:'  # Header for next restart info
+    time: '§f➥ §aTime: §f%hour%:%minute%'  # Time of next restart
+    day: '§f➥ §aDay: §f%day%'  # Day of next restart
+    remaining: '§f➥ §aRemaining: §f%days% days %hours% hours %minutes% minutes %seconds% seconds'  # Time remaining
+    not-found: '§cNo scheduled restart found!'  # When no schedule is available
+  errors:
+    no-permission: '§cYou do not have permission to use this command!'  # No permission error
+    invalid-time: '§cTime must be a number!'  # Time format error
+    invalid-command: '§cInvalid command! Use: /%label% <reload|start|infotime>'  # Command format error
+  success:
+    reload: '§aPlugin successfully reloaded!'  # Reload success message
+    start: '§aServer restart initiated!'  # Manual restart success message
+
+day-names:
+  MONDAY: 'Monday'
+  TUESDAY: 'Tuesday'
+  WEDNESDAY: 'Wednesday'
+  THURSDAY: 'Thursday'
+  FRIDAY: 'Friday'
+  SATURDAY: 'Saturday'
+  SUNDAY: 'Sunday'
+
+discord:
+  enabled: true
+  webhook-url: 'YOUR_WEBHOOK_URL_HERE'
+  messages:
+    restart: '🔄 Server will restart in %time% seconds!'  # Discord message before restart
+    completed: '✅ Server restarted successfully!'  # Discord message after restart

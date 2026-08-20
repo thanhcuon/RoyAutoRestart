@@ -1,0 +1,85 @@
+# ==============================================================================
+#                 TỆP NGÔN NGỮ TIẾNG VIỆT (VI_VN) - ROYAUTORESTART
+# ==============================================================================
+# Hỗ trợ đầy đủ:
+# - Mã màu legacy: &a, &b, &l, &r, v.v.
+# - Mã màu HEX: &#FFAA00, &#55FF55, v.v.
+# - Dải màu Gradient: <gradient:#FF416C:#8A2387>&lVĂN BẢN</gradient>
+# - Hiệu ứng cầu vồng: <rainbow>VĂN BẢN</rainbow>
+# ==============================================================================
+
+# Tên hiển thị của các ngày trong tuần và lịch hàng ngày
+day-names:
+  DAILY: 'Hàng ngày'
+  MONDAY: 'Thứ Hai'
+  TUESDAY: 'Thứ Ba'
+  WEDNESDAY: 'Thứ Tư'
+  THURSDAY: 'Thứ Năm'
+  FRIDAY: 'Thứ Sáu'
+  SATURDAY: 'Thứ Bảy'
+  SUNDAY: 'Chủ Nhật'
+
+# Tên các đơn vị thời gian
+time-units:
+  days: 'ngày'
+  hours: 'giờ'
+  minutes: 'phút'
+  seconds: 'giây'
+
+# Cấu hình hiển thị Tiêu đề (Title & Subtitle) giữa màn hình
+title:
+  enabled: true
+  title: '<gradient:#FF416C:#8A2387>&lKHỞI ĐỘNG LẠI</gradient>'
+  subtitle: '&#f1c40fMáy chủ sẽ khởi động lại sau &#e74c3c%time%&#f1c40f giây'
+  fade-in: 10
+  stay: 25
+  fade-out: 10
+
+# Cấu hình thanh hành động (Action Bar) phía trên thanh máu
+actionbar:
+  enabled: true
+  message: '&#f39c12⚠️ Máy chủ khởi động lại trong &#e74c3c%time% &#f39c12giây...'
+
+# Toàn bộ tin nhắn chat trong game
+messages:
+  # Tin nhắn đếm ngược trong chat
+  chat-countdown: '&#e74c3c&l[Hệ thống] &#ffffffMáy chủ sẽ khởi động lại sau &#f1c40f%time% &#ffffffgiây!'
+  
+  # Tin nhắn thông báo khi đang lưu dữ liệu thế giới
+  saving: '&#f39c12&l[Hệ thống] &#ffffffĐang tiến hành lưu toàn bộ dữ liệu thế giới, vui lòng chờ...'
+  
+  # Tin nhắn thông báo sau khi đã lưu xong
+  saved: '&#2ecc71&l[Hệ thống] &#ffffffĐã lưu an toàn toàn bộ dữ liệu thế giới!'
+  
+  # Tin nhắn khi chuyển người chơi về Lobby
+  kick-lobby: '&#e74c3c&l[Máy chủ đang khởi động lại]\n&#f1c40fĐang kết nối bạn về máy chủ Lobby, vui lòng đợi giây lát...'
+  
+  # Tin nhắn khi kick người chơi còn lại lúc server chuẩn bị tắt
+  kick-shutdown: '&#e74c3c&l[KHỞI ĐỘNG LẠI MÁY CHỦ]\n\n&#ffffffMáy chủ đang được bảo trì / khởi động lại theo lịch.\n&#f1c40fVui lòng kết nối lại sau 1-2 phút!'
+
+  # Thông tin lịch khởi động lại kế tiếp (/rar infotime)
+  infotime:
+    header: '&#f1c40f⌚ &lLỊCH KHỞI ĐỘNG LẠI KẾ TIẾP:'
+    time: '&#7f8c8d➥ &#2ecc71Thời gian: &#ffffff%hour%:%minute%'
+    day: '&#7f8c8d➥ &#2ecc71Ngày: &#ffffff%day%'
+    remaining: '&#7f8c8d➥ &#2ecc71Còn lại: &#ffffff%days% %hours% %minutes% %seconds%'
+    not-found: '&#e74c3cKhông tìm thấy lịch khởi động lại nào trong cấu hình!'
+
+  # Các thông báo liên quan đến lệnh quản trị
+  commands:
+    no-permission: '&#e74c3cBạn không có quyền thực hiện lệnh này!'
+    invalid-time: '&#e74c3cThời gian đếm ngược phải là số nguyên dương hợp lệ (giây)!'
+    invalid-delay: '&#e74c3cThời gian chờ (delay) phải là số nguyên dương hợp lệ (giây)!'
+    invalid-command: '&#e74c3cCú pháp không hợp lệ! Sử dụng: &#ffffff/%label% <reload|start|cancel|infotime>'
+    already-restarting: '&#e74c3cMáy chủ đã và đang trong tiến trình đếm ngược khởi động lại!'
+    not-restarting: '&#e74c3cHiện tại không có tiến trình khởi động lại nào đang diễn ra để hủy!'
+    cancel-success: '&#2ecc71Đã hủy bỏ tiến trình khởi động lại máy chủ thành công!'
+    reload-success: '&#2ecc71Đã tải lại cấu hình và file ngôn ngữ thành công!'
+    start-success: '&#2ecc71Đã bắt đầu tiến trình khởi động lại máy chủ trong %time% giây!'
+    help:
+      - '&#7f8c8d&m-----------------&r <gradient:#f39c12:#f1c40f>&l[ ROYAUTORESTART ]</gradient> &#7f8c8d&m-----------------'
+      - '&#2ecc71/%label% reload &#7f8c8d- &#ffffffTải lại toàn bộ cấu hình và file ngôn ngữ'
+      - '&#2ecc71/%label% start <giây> [tin nhắn] [delay] &#7f8c8d- &#ffffffBắt đầu khởi động lại thủ công'
+      - '&#2ecc71/%label% cancel &#7f8c8d- &#ffffffHủy bỏ tiến trình khởi động lại đang đếm ngược'
+      - '&#2ecc71/%label% infotime &#7f8c8d- &#ffffffXem thông tin thời gian khởi động lại kế tiếp'
+      - '&#7f8c8d&m----------------------------------------------------'

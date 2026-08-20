@@ -1,21 +1,32 @@
 name: RoyAutoRestart
-version: '1.0'
+version: '2.0.0'
 main: com.github.athanh.royAutoRestart.RoyAutoRestart
 api-version: '1.18'
 authors: [athanh]
 website: roymcvn.com
 softdepend: [PlaceholderAPI]
+description: Professional, Smooth and Safe Auto Restart Plugin for Minecraft Servers.
+
 commands:
   royautorestart:
-    description: Plugin commands
-    usage: /<command> <reload|start|infotime> [time] [message] [delay]
+    description: RoyAutoRestart admin and user commands
+    usage: /<command> <reload|start|cancel|infotime> [seconds] [message] [delay]
     permission: royautorestart.admin
-    aliases: [rar]
+    aliases: [rar, autorestart]
 
 permissions:
   royautorestart.admin:
-    description: Access to all plugin commands
+    description: Access to all RoyAutoRestart plugin commands
     default: op
   royautorestart.reload:
-    description: Allows reloading the plugin configuration
+    description: Allows reloading configuration and language files
     default: op
+  royautorestart.start:
+    description: Allows starting a manual server restart
+    default: op
+  royautorestart.cancel:
+    description: Allows canceling an ongoing server restart countdown
+    default: op
+  royautorestart.infotime:
+    description: Allows checking the next scheduled restart time
+    default: true

@@ -1,50 +1,93 @@
-# Restart schedule configuration
+# ==============================================================================
+#                      ROYAUTORESTART CONFIGURATION FILE
+# ==============================================================================
+# Plugin tự động khởi động lại máy chủ Minecraft chuyên nghiệp, an toàn, mượt mà.
+# Hỗ trợ đầy đủ: Spigot, Bukkit, Paper, Leaf, Purpur, Folia (1.18.x -> 26.x)
+# Tác giả: athanh (RoyMC)
+# ==============================================================================
+
+# Cấu hình ngôn ngữ hiển thị của plugin.
+# Các tệp ngôn ngữ nằm trong thư mục 'lang/'.
+# Tuỳ chọn có sẵn:
+#   - vi_vn : Tiếng Việt (Mặc định)
+#   - en_us : Tiếng Anh (English)
+# Bạn có thể tự thêm file ngôn ngữ mới vào thư mục lang/ (ví dụ: zh_cn.yml, ja_jp.yml) và điền tên file vào đây.
+language: "vi_vn"
+
+# ==============================================================================
+#                       LỊCH KHỞI ĐỘNG LẠI (RESTART SCHEDULE)
+# ==============================================================================
+# Định dạng cấu hình lịch restart:
+# 1. Hàng ngày:   'DAILY;HH:mm'    (Ví dụ: 'DAILY;12:00' -> Khởi động lại mỗi ngày lúc 12:00 trưa)
+# 2. Thứ cụ thể:  'THỨ;HH:mm'      (Ví dụ: 'MONDAY;06:00' -> Thứ Hai lúc 06:00 sáng)
+# Các thứ hợp lệ: MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY
+# Thời gian theo định dạng 24 giờ (HH: 00-23, mm: 00-59).
 restart-schedule:
-  - 'MONDAY;11:00'     # Monday at 11:00 AM
-  - 'MONDAY;23:00'     # Monday at 11:00 PM
-  - 'TUESDAY;06:00'    # Tuesday at 6:00 AM
-  - 'WEDNESDAY;06:00'  # Wednesday at 6:00 AM
-  - 'THURSDAY;06:00'   # Thursday at 6:00 AM
-  - 'FRIDAY;10:00'     # Friday at 10:00 AM
-  - 'FRIDAY;22:00'     # Friday at 10:00 PM
-  - 'SATURDAY;06:00'   # Saturday at 6:00 AM
-  - 'SUNDAY;06:00'     # Sunday at 6:00 AM
+  - 'DAILY;12:00'      # Khởi động lại hàng ngày vào lúc 12:00 trưa
+  - 'DAILY;00:00'      # Khởi động lại hàng ngày vào lúc 00:00 nửa đêm
+  - 'MONDAY;06:00'     # Thứ Hai lúc 06:00 sáng
+  - 'FRIDAY;18:00'     # Thứ Sáu lúc 18:00 chiều
+
+# Các mốc thời gian đếm ngược (tính bằng giây) trước khi máy chủ chính thức khởi động lại.
+# Tại mỗi mốc này, plugin sẽ gửi thông báo Chat, Title, Action Bar, Âm thanh và Discord.
+countdown-times:
+  - 60
+  - 30
+  - 10
+  - 5
+  - 4
+  - 3
+  - 2
+  - 1
+
+# ==============================================================================
+#                      CẤU HÌNH BUNGEECORD / VELOCITY LOBBY
+# ==============================================================================
+# Tự động gửi người chơi về máy chủ sảnh (Lobby) trước khi máy chủ khởi động lại
+# để tránh người chơi bị văng ra khỏi mạng lưới máy chủ.
 bungeecord:
+  # Bật/Tắt tính năng chuyển người chơi về Lobby
   enabled: true
+  
+  # Tên máy chủ Lobby được cấu hình trong proxy (BungeeCord / Velocity / Waterfall)
   lobby-server: "lobby"
-  kick-message: "§cServer đang khởi động lại!\n§eĐang chuyển bạn về Lobby..."
-messages:
-  title: '§c§lSERVER RESTART'  # Title displayed during server restart
-  subtitle: '§eRestarting in %time% seconds'  # Subtitle showing time left
-  chat: '§c[Server] Server will restart in %time% seconds!'  # Chat message
-  saving: '§e[Server] Saving world...'  # Message when saving world
-  saved: '§a[Server] World saved successfully!'  # Message after save is complete
-  infotime:
-    header: '§e⌚ Next scheduled restart time:'  # Header for next restart info
-    time: '§f➥ §aTime: §f%hour%:%minute%'  # Time of next restart
-    day: '§f➥ §aDay: §f%day%'  # Day of next restart
-    remaining: '§f➥ §aRemaining: §f%days% days %hours% hours %minutes% minutes %seconds% seconds'  # Time remaining
-    not-found: '§cNo scheduled restart found!'  # When no schedule is available
-  errors:
-    no-permission: '§cYou do not have permission to use this command!'  # No permission error
-    invalid-time: '§cTime must be a number!'  # Time format error
-    invalid-command: '§cInvalid command! Use: /%label% <reload|start|infotime>'  # Command format error
-  success:
-    reload: '§aPlugin successfully reloaded!'  # Reload success message
-    start: '§aServer restart initiated!'  # Manual restart success message
+  
+  # Khoảng thời gian chờ (tính bằng tick, 20 ticks = 1 giây) sau khi gửi người chơi về Lobby
+  # trước khi thực hiện kick các người chơi còn sót lại và tắt máy chủ.
+  send-delay-ticks: 20
 
-day-names:
-  MONDAY: 'Monday'
-  TUESDAY: 'Tuesday'
-  WEDNESDAY: 'Wednesday'
-  THURSDAY: 'Thursday'
-  FRIDAY: 'Friday'
-  SATURDAY: 'Saturday'
-  SUNDAY: 'Sunday'
+# ==============================================================================
+#                       CƠ CHẾ KHỞI ĐỘNG LẠI AN TOÀN (SAFE RESTART)
+# ==============================================================================
+# Đảm bảo dữ liệu máy chủ được bảo toàn nguyên vẹn, không gây lỗi thế giới hoặc crash.
+safe-restart:
+  # Tự động lưu toàn bộ dữ liệu thế giới (world.save()) trước khi tắt máy chủ
+  save-worlds: true
+  
+  # Kick an toàn toàn bộ người chơi còn lại trên máy chủ trước khi dừng server
+  kick-players-before-shutdown: true
+  
+  # Lệnh dùng để khởi động lại máy chủ trên Console.
+  # Thường là: 'restart' (Spigot/Paper) hoặc 'stop' (đối với script loop tự bật lại)
+  restart-command: "restart"
+  
+  # Danh sách các lệnh tuỳ chỉnh thực thi trên Console trước khi restart
+  # Ví dụ: lưu dữ liệu các plugin khác ("save-all", "authme save", v.v.)
+  commands-before-restart: []
 
-discord:
+# ==============================================================================
+#                         HIỆU ỨNG ÂM THANH (SOUND EFFECTS)
+# ==============================================================================
+sound:
+  # Bật/Tắt phát âm thanh đếm ngược cho người chơi
   enabled: true
-  webhook-url: 'YOUR_WEBHOOK_URL_HERE'
-  messages:
-    restart: '🔄 Server will restart in %time% seconds!'  # Discord message before restart
-    completed: '✅ Server restarted successfully!'  # Discord message after restart
+  
+  # Tên âm thanh trong Minecraft (Tương thích 1.18 -> 26.x)
+  # Ví dụ: BLOCK_NOTE_BLOCK_PLING, ENTITY_EXPERIENCE_ORB_PICKUP, UI_BUTTON_CLICK
+  name: "BLOCK_NOTE_BLOCK_PLING"
+  
+  # Âm lượng (Volume)
+  volume: 1.0
+  
+  # Cao độ (Pitch)
+  pitch: 1.2

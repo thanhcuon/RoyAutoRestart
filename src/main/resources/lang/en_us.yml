@@ -1,0 +1,85 @@
+# ==============================================================================
+#                 ENGLISH LANGUAGE FILE (EN_US) - ROYAUTORESTART
+# ==============================================================================
+# Full Support:
+# - Legacy color codes: &a, &b, &l, &r, etc.
+# - HEX color codes: &#FFAA00, &#55FF55, etc.
+# - Gradients: <gradient:#FF416C:#8A2387>&lTEXT</gradient>
+# - Rainbow effect: <rainbow>TEXT</rainbow>
+# ==============================================================================
+
+# Display names of days and daily schedule
+day-names:
+  DAILY: 'Daily'
+  MONDAY: 'Monday'
+  TUESDAY: 'Tuesday'
+  WEDNESDAY: 'Wednesday'
+  THURSDAY: 'Thursday'
+  FRIDAY: 'Friday'
+  SATURDAY: 'Saturday'
+  SUNDAY: 'Sunday'
+
+# Time unit names
+time-units:
+  days: 'days'
+  hours: 'hours'
+  minutes: 'minutes'
+  seconds: 'seconds'
+
+# Title & Subtitle configuration
+title:
+  enabled: true
+  title: '<gradient:#FF416C:#8A2387>&lSERVER RESTART</gradient>'
+  subtitle: '&#f1c40fRestarting in &#e74c3c%time%&#f1c40f seconds'
+  fade-in: 10
+  stay: 25
+  fade-out: 10
+
+# Action Bar configuration
+actionbar:
+  enabled: true
+  message: '&#f39c12⚠️ Server restarting in &#e74c3c%time% &#f39c12seconds...'
+
+# In-game chat messages
+messages:
+  # Countdown chat message
+  chat-countdown: '&#e74c3c&l[Server] &#ffffffServer will restart in &#f1c40f%time% &#ffffffseconds!'
+  
+  # World saving message
+  saving: '&#f39c12&l[Server] &#ffffffSaving world data, please wait...'
+  
+  # World saved message
+  saved: '&#2ecc71&l[Server] &#ffffffAll world data saved successfully!'
+  
+  # Message when sending players to Lobby
+  kick-lobby: '&#e74c3c&l[Server Restarting]\n&#f1c40fConnecting you to the Lobby server...'
+  
+  # Message when kicking remaining players during shutdown
+  kick-shutdown: '&#e74c3c&l[SERVER RESTART]\n\n&#ffffffThe server is restarting as scheduled.\n&#f1c40fPlease reconnect in 1-2 minutes!'
+
+  # Next restart infotime (/rar infotime)
+  infotime:
+    header: '&#f1c40f⌚ &lNEXT SCHEDULED RESTART:'
+    time: '&#7f8c8d➥ &#2ecc71Time: &#ffffff%hour%:%minute%'
+    day: '&#7f8c8d➥ &#2ecc71Day: &#ffffff%day%'
+    remaining: '&#7f8c8d➥ &#2ecc71Remaining: &#ffffff%days% %hours% %minutes% %seconds%'
+    not-found: '&#e74c3cNo scheduled restart found in configuration!'
+
+  # Administrative command messages
+  commands:
+    no-permission: '&#e74c3cYou do not have permission to execute this command!'
+    invalid-time: '&#e74c3cCountdown time must be a valid positive integer (seconds)!'
+    invalid-delay: '&#e74c3cDelay time must be a valid positive integer (seconds)!'
+    invalid-command: '&#e74c3cInvalid command usage! Use: &#ffffff/%label% <reload|start|cancel|infotime>'
+    already-restarting: '&#e74c3cA server restart countdown is already in progress!'
+    not-restarting: '&#e74c3cThere is no active restart process to cancel!'
+    cancel-success: '&#2ecc71Server restart sequence has been cancelled successfully!'
+    reload-success: '&#2ecc71Configuration and language files reloaded successfully!'
+    start-success: '&#2ecc71Server restart sequence initiated for %time% seconds!'
+    help:
+      - '&#7f8c8d&m-----------------&r <gradient:#f39c12:#f1c40f>&l[ ROYAUTORESTART ]</gradient> &#7f8c8d&m-----------------'
+      - '&#2ecc71/%label% reload &#7f8c8d- &#ffffffReload config and language files'
+      - '&#2ecc71/%label% start <seconds> [message] [delay] &#7f8c8d- &#ffffffStart manual server restart'
+      - '&#2ecc71/%label% cancel &#7f8c8d- &#ffffffCancel current restart countdown'
+      - '&#2ecc71/%label% infotime &#7f8c8d- &#ffffffCheck next scheduled restart time'
+      - '&#7f8c8d&m----------------------------------------------------'

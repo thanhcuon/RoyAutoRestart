@@ -1,0 +1,61 @@
+# ==============================================================================
+#                  CẤU HÌNH DISCORD WEBHOOK (DISCORD.YML)
+# ==============================================================================
+# Tự động gửi thông báo trạng thái khởi động lại máy chủ lên Discord qua Webhook.
+# Toàn bộ tiến trình gửi được xử lý BẤT ĐỒNG BỘ (Async), không gây giật lag server.
+# ==============================================================================
+
+# Bật hoặc tắt tích hợp Discord Webhook
+enabled: false
+
+# Đường dẫn URL Webhook của kênh Discord bạn muốn nhận thông báo
+webhook-url: "YOUR_DISCORD_WEBHOOK_URL_HERE"
+
+# Tên hiển thị của Bot gửi tin nhắn trên Discord
+username: "RoyAutoRestart"
+
+# Link hình ảnh đại diện (Avatar) của Bot (để trống nếu dùng mặc định của Webhook)
+avatar-url: ""
+
+# Các mốc thời gian đếm ngược (tính bằng giây) sẽ gửi thông báo lên Discord
+notify-intervals:
+  - 60
+  - 30
+  - 10
+  - 5
+
+# Cấu hình định dạng Discord Embed đẹp mắt
+embed:
+  # Sử dụng định dạng Embed (true) hoặc tin nhắn văn bản thông thường (false)
+  enabled: true
+  
+  # Màu viền của Embed (Mã màu HEX hoặc số thập phân)
+  # Ví dụ: #FFAA00 (Cam), #FF5555 (Đỏ), #55FF55 (Xanh lá)
+  color: "#FFAA00"
+  
+  # Cấu hình tiêu đề tác giả (Author)
+  author:
+    name: "RoyAutoRestart System"
+    icon-url: ""
+    
+  # Cấu hình chân trang (Footer)
+  footer:
+    text: "Server Auto Restart • %time_now%"
+    icon-url: ""
+
+# Nội dung các thông điệp gửi lên Discord
+messages:
+  # Tin nhắn đếm ngược
+  restart-countdown: "🔄 **Thông báo:** Máy chủ sẽ khởi động lại sau **%time%** giây!"
+  
+  # Tin nhắn khi máy chủ bắt đầu lưu dữ liệu và tắt
+  restarting-now: "⚠️ **Thông báo:** Máy chủ đang tiến hành khởi động lại và lưu dữ liệu..."
+  
+  # Tin nhắn khi máy chủ khởi động lại thành công và online trở lại
+  completed: "✅ **Thông báo:** Máy chủ đã khởi động lại thành công và sẵn sàng đón người chơi!"
+  
+  # Tin nhắn khi tiến trình khởi động lại bị hủy bỏ
+  cancelled: "❌ **Thông báo:** Tiến trình khởi động lại máy chủ đã bị hủy bỏ bởi Quản trị viên!"
+  
+  # Tin nhắn cảnh báo nếu máy chủ phản hồi chậm hoặc lỗi
+  failed: "❌ **Cảnh báo:** Máy chủ phản hồi chậm sau khi gửi lệnh khởi động lại!"

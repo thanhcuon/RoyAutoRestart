@@ -9,7 +9,10 @@ restart-schedule:
   - 'FRIDAY;22:00'     # Friday at 10:00 PM
   - 'SATURDAY;06:00'   # Saturday at 6:00 AM
   - 'SUNDAY;06:00'     # Sunday at 6:00 AM
-
+bungeecord:
+  enabled: true
+  lobby-server: "lobby"
+  kick-message: "§cServer đang khởi động lại!\n§eĐang chuyển bạn về Lobby..."
 messages:
   title: '§c§lSERVER RESTART'  # Title displayed during server restart
   subtitle: '§eRestarting in %time% seconds'  # Subtitle showing time left

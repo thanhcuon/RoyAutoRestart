@@ -3,8 +3,11 @@ package com.github.athanh.royAutoRestart.manager;
 import com.github.athanh.royAutoRestart.config.RestartConfig;
 import com.github.athanh.royAutoRestart.models.RestartTime;
 import com.github.athanh.royAutoRestart.utils.DiscordWebhook;
+import com.google.common.io.ByteArrayDataOutput;
+import com.google.common.io.ByteStreams;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 import java.time.DayOfWeek;
@@ -23,6 +26,10 @@ public class RestartManager {
     private boolean isRestarting = false;
     private int taskId = -1;
     private DiscordWebhook discord;
+    private boolean serverFullyStarted = false;
+    private final int CHECK_INTERVAL = 20;
+    private final int MAX_CHECKS = 60;
+    private int checkCount = 0;
     public RestartManager(Plugin plugin, RestartConfig config) {
         this.plugin = plugin;
         this.config = config;
@@ -47,7 +54,35 @@ public class RestartManager {
                     break;
                 }
             }
-        }, 1200L, 1200L).getTaskId(); // Check every minute
+        }, 1200L, 1200L).getTaskId();
+    }
+
+    private void checkServerStatus() {
+        taskId = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+            if (checkCount >= MAX_CHECKS) {
+                serverFullyStarted = true;
+                if (discord != null) {
+                    String discordMessage = plugin.getConfig().getString("discord.messages.failed", "❌ Server khởi động không thành công sau 60 giây!");
+                    discord.sendMessage(discordMessage);
+                }
+                return;
+            }
+
+
+            if (Bukkit.getOnlinePlayers().size() >= 0 &&
+                    !Bukkit.hasWhitelist() &&
+                    Bukkit.getServer().getTPS()[0] > 18.0) {
+
+                serverFullyStarted = true;
+                if (discord != null) {
+                    String discordMessage = plugin.getConfig().getString("discord.messages.completed", "✅ Server đã khởi động lại thành công!");
+                    discord.sendMessage(discordMessage);
+                }
+                Bukkit.getScheduler().cancelTask(taskId);
+            }
+
+            checkCount++;
+        }, CHECK_INTERVAL, CHECK_INTERVAL).getTaskId();
     }
 
     private void startRestartSequence() {
@@ -171,6 +206,44 @@ public class RestartManager {
             startCountdown(seconds, customMessage);
         }
     }
+    private void kickPlayersToLobby() {
+        if (!config.isBungeecordEnabled()) {
+            return;
+        }
+
+        String lobbyServer = config.getLobbyServer();
+        String kickMessage = config.getKickMessage();
+
+        Bukkit.getScheduler().runTaskLater(plugin, () -> {
+            int playerCount = Bukkit.getOnlinePlayers().size();
+            int processedPlayers = 0;
+
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                try {
+                    ByteArrayDataOutput out = ByteStreams.newDataOutput();
+                    out.writeUTF("Connect");
+                    out.writeUTF(lobbyServer);
+
+                    player.sendMessage(kickMessage);
+                    player.sendPluginMessage(plugin, "BungeeCord", out.toByteArray());
+                    processedPlayers++;
+
+                    plugin.getLogger().info("Sending player " + player.getName() + " to lobby server (" + processedPlayers + "/" + playerCount + ")");
+                } catch (Exception e) {
+                    plugin.getLogger().warning("Failed to send player " + player.getName() + " to lobby server: " + e.getMessage());
+                }
+            }
+
+            Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                if (discord != null) {
+                    checkServerStatus();
+                }
+                plugin.getLogger().info("All players have been sent to lobby, restarting server...");
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "restart");
+            }, 40L);
+
+        }, 20L);
+    }
 
     private void startCountdown(int seconds, String customMessage) {
 
@@ -209,11 +282,9 @@ public class RestartManager {
         Bukkit.getScheduler().runTaskLater(plugin, () -> {
             saveAllWorlds();
             logRestartInfo();
-            if (discord != null) {
-                String discordMessage = plugin.getConfig().getString("discord.messages.completed", "✅ Server đã khởi động lại thành công!");
-                discord.sendMessage(discordMessage);
-            }
-            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "restart");
+
+            kickPlayersToLobby();
+
         }, seconds * 20L);
     }
 
@@ -234,5 +305,19 @@ public class RestartManager {
             taskId = -1;
         }
         isRestarting = false;
+    }
+    public LocalDateTime getNextRestartDateTime() {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime nextRestart = null;
+
+        for (RestartTime time : config.getRestartTimes()) {
+            LocalDateTime restartTime = getNextOccurrence(time);
+
+            if (nextRestart == null || restartTime.isBefore(nextRestart)) {
+                nextRestart = restartTime;
+            }
+        }
+
+        return nextRestart;
     }
 }

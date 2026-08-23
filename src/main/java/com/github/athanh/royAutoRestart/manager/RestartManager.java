@@ -15,13 +15,14 @@ import org.bukkit.plugin.Plugin;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
 /**
- * Coordinates and executes server restart sequences smoothly and safely.
+ * Coordinates and executes server restart sequences smoothly and safely with TimeZone awareness.
  */
 public class RestartManager {
 
@@ -50,6 +51,13 @@ public class RestartManager {
     }
 
     /**
+     * Get current LocalDateTime according to the configured TimeZone.
+     */
+    public LocalDateTime getNow() {
+        return ZonedDateTime.now(configManager.getZoneId()).toLocalDateTime();
+    }
+
+    /**
      * Start periodic task to check if current time matches scheduled restart times.
      */
     private void startScheduleChecker() {
@@ -61,7 +69,7 @@ public class RestartManager {
         scheduleCheckerTask = scheduler.runTaskTimer(() -> {
             if (isRestarting) return;
 
-            LocalDateTime now = LocalDateTime.now();
+            LocalDateTime now = getNow();
             int currentDay = now.getDayOfYear();
             int currentHour = now.getHour();
             int currentMinute = now.getMinute();
@@ -77,7 +85,7 @@ public class RestartManager {
                     lastTriggeredHour = currentHour;
                     lastTriggeredMinute = currentMinute;
 
-                    plugin.getLogger().info("[RoyAutoRestart] Scheduled restart time matched: " + time + ". Starting restart sequence...");
+                    plugin.getLogger().info("[RoyAutoRestart] Scheduled restart time matched: " + time + " in timezone " + configManager.getZoneId().getId() + ". Starting restart sequence...");
                     startRestartSequence();
                     break;
                 }
@@ -314,12 +322,12 @@ public class RestartManager {
 
     private void logRestartInfo() {
         Logger logger = plugin.getLogger();
+        ZonedDateTime now = ZonedDateTime.now(configManager.getZoneId());
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        LocalDateTime now = LocalDateTime.now();
 
         logger.info("========================================");
         logger.info("[RoyAutoRestart] Server Restart Triggered");
-        logger.info("Timestamp: " + now.format(formatter));
+        logger.info("Timestamp: " + now.format(formatter) + " (" + configManager.getZoneId().getId() + ")");
         logger.info("========================================");
     }
 
@@ -327,7 +335,7 @@ public class RestartManager {
      * Get human-readable information about the next scheduled restart time.
      */
     public String getNextRestartInfo() {
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now = getNow();
         LocalDateTime nextRestart = null;
         RestartTime nextTime = null;
 
@@ -359,7 +367,7 @@ public class RestartManager {
         String remainingStr = days + " " + daysUnit + " " + hours + " " + hoursUnit + " " + minutes + " " + minutesUnit + " " + seconds + " " + secondsUnit;
 
         String header = languageManager.getMessage("messages.infotime.header");
-        String timeLine = languageManager.getMessage("messages.infotime.time", "%hour%", String.format("%02d", nextTime.getHour()), "%minute%", String.format("%02d", nextTime.getMinute()));
+        String timeLine = languageManager.getMessage("messages.infotime.time", "%hour%", String.format("%02d", nextTime.getHour()), "%minute%", String.format("%02d", nextTime.getMinute()), "%timezone%", configManager.getZoneId().getId());
         String dayLine = languageManager.getMessage("messages.infotime.day", "%day%", dayName);
         String remainingLine = languageManager.getMessage("messages.infotime.remaining",
                 "%days%", String.valueOf(days) + " " + daysUnit,
@@ -376,7 +384,7 @@ public class RestartManager {
      * Get the exact LocalDateTime of the next scheduled restart.
      */
     public LocalDateTime getNextRestartDateTime() {
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now = getNow();
         LocalDateTime nextRestart = null;
 
         for (RestartTime time : configManager.getRestartTimes()) {

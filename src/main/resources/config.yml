@@ -15,16 +15,36 @@
 language: "vi_vn"
 
 # ==============================================================================
+#                      CẤU HÌNH MÚI GIỜ (TIMEZONE CONFIGURATION)
+# ==============================================================================
+# Thiết lập múi giờ cho máy chủ để đảm bảo lịch restart-schedule chạy chuẩn xác 100%
+# theo giờ địa phương của bạn, tránh lệch giờ khi thuê VPS/Dedicated tại nước ngoài
+# (Ví dụ: VPS ở Đức/Pháp chạy UTC+1/UTC+2, Mỹ chạy UTC-5/UTC-8, Singapore chạy UTC+8).
+#
+# Mặc định chuẩn Việt Nam: "Asia/Ho_Chi_Minh" (GMT+7)
+#
+# Các định dạng múi giờ hợp lệ:
+#   - Tên khu vực / Thành phố chuẩn IANA:
+#       + Việt Nam:        "Asia/Ho_Chi_Minh" hoặc "Asia/Saigon" (GMT+7)
+#       + Nhật Bản / Hàn:  "Asia/Tokyo", "Asia/Seoul" (GMT+9)
+#       + Singapore:       "Asia/Singapore" (GMT+8)
+#       + Châu Âu:         "Europe/London" (GMT+0/+1), "Europe/Paris", "Europe/Berlin" (GMT+1/+2)
+#       + Châu Mỹ:         "America/New_York" (GMT-5/-4), "America/Los_Angeles" (GMT-8/-7)
+#   - Độ lệch GMT/UTC:     "GMT+7", "UTC+7", "+07:00", "UTC+0", "GMT-5", v.v.
+#   - Dùng giờ gốc hệ điều hành máy chủ VPS: "SYSTEM"
+timezone: "Asia/Ho_Chi_Minh"
+
+# ==============================================================================
 #                       LỊCH KHỞI ĐỘNG LẠI (RESTART SCHEDULE)
 # ==============================================================================
-# Định dạng cấu hình lịch restart:
+# Định dạng cấu hình lịch restart (tính theo múi giờ 'timezone' đã cấu hình ở trên):
 # 1. Hàng ngày:   'DAILY;HH:mm'    (Ví dụ: 'DAILY;12:00' -> Khởi động lại mỗi ngày lúc 12:00 trưa)
 # 2. Thứ cụ thể:  'THỨ;HH:mm'      (Ví dụ: 'MONDAY;06:00' -> Thứ Hai lúc 06:00 sáng)
 # Các thứ hợp lệ: MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY
 # Thời gian theo định dạng 24 giờ (HH: 00-23, mm: 00-59).
 restart-schedule:
-  - 'DAILY;12:00'      # Khởi động lại hàng ngày vào lúc 12:00 trưa
-  - 'DAILY;00:00'      # Khởi động lại hàng ngày vào lúc 00:00 nửa đêm
+  - 'DAILY;12:00'      # Khởi động lại hàng ngày vào lúc 12:00 trưa (Giờ Việt Nam)
+  - 'DAILY;00:00'      # Khởi động lại hàng ngày vào lúc 00:00 nửa đêm (Giờ Việt Nam)
   - 'MONDAY;06:00'     # Thứ Hai lúc 06:00 sáng
   - 'FRIDAY;18:00'     # Thứ Sáu lúc 18:00 chiều
 

@@ -7,7 +7,8 @@ import javax.net.ssl.HttpsURLConnection;
 import java.io.OutputStream;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -15,13 +16,14 @@ import java.util.concurrent.Executors;
 import java.util.logging.Level;
 
 /**
- * Handles asynchronous Discord Webhook notifications with embed support.
+ * Handles asynchronous Discord Webhook notifications with embed and timezone support.
  */
 public class DiscordManager {
 
     private final Plugin plugin;
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
 
+    private ZoneId zoneId = ZoneId.of("Asia/Ho_Chi_Minh");
     private boolean enabled;
     private String webhookUrl;
     private String username;
@@ -41,12 +43,15 @@ public class DiscordManager {
     private String msgCancelled;
     private String msgFailed;
 
-    public DiscordManager(Plugin plugin, FileConfiguration discordConfig) {
+    public DiscordManager(Plugin plugin, FileConfiguration discordConfig, ZoneId zoneId) {
         this.plugin = plugin;
-        loadConfig(discordConfig);
+        this.zoneId = zoneId != null ? zoneId : ZoneId.of("Asia/Ho_Chi_Minh");
+        loadConfig(discordConfig, this.zoneId);
     }
 
-    public void loadConfig(FileConfiguration config) {
+    public void loadConfig(FileConfiguration config, ZoneId zoneId) {
+        this.zoneId = zoneId != null ? zoneId : ZoneId.of("Asia/Ho_Chi_Minh");
+
         if (config == null) {
             this.enabled = false;
             return;
@@ -117,7 +122,8 @@ public class DiscordManager {
 
         executor.submit(() -> {
             try {
-                String formattedNow = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
+                ZonedDateTime now = ZonedDateTime.now(zoneId);
+                String formattedNow = now.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
                 String finalContent = messageContent.replace("%time_now%", formattedNow);
 
                 String jsonPayload;

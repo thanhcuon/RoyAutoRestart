@@ -6,6 +6,8 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 
 import java.io.File;
+import java.time.Instant;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -18,6 +20,7 @@ public class ConfigManager {
     private final Plugin plugin;
     private final LanguageManager languageManager;
 
+    private ZoneId zoneId;
     private List<RestartTime> restartTimes;
     private List<Integer> countdownTimes;
     private boolean bungeecordEnabled;
@@ -53,7 +56,12 @@ public class ConfigManager {
         String language = config.getString("language", "vi_vn");
         languageManager.loadLanguage(language);
 
-        // 2. Restart Schedule
+        // 2. TimeZone
+        String timeZoneStr = config.getString("timezone", "Asia/Ho_Chi_Minh");
+        this.zoneId = parseZoneId(timeZoneStr);
+        plugin.getLogger().info("[RoyAutoRestart] Timezone configured: " + zoneId.getId() + " (" + zoneId.getRules().getOffset(Instant.now()) + ")");
+
+        // 3. Restart Schedule
         this.restartTimes = new ArrayList<>();
         List<String> schedules = config.getStringList("restart-schedule");
         for (String schedule : schedules) {
@@ -65,7 +73,7 @@ public class ConfigManager {
             }
         }
 
-        // 3. Countdown Times
+        // 4. Countdown Times
         List<Integer> rawCountdown = config.getIntegerList("countdown-times");
         if (rawCountdown.isEmpty()) {
             rawCountdown = List.of(60, 30, 10, 5, 4, 3, 2, 1);
@@ -74,25 +82,56 @@ public class ConfigManager {
         // Sort descending
         this.countdownTimes.sort(Collections.reverseOrder());
 
-        // 4. BungeeCord
+        // 5. BungeeCord
         this.bungeecordEnabled = config.getBoolean("bungeecord.enabled", true);
         this.lobbyServer = config.getString("bungeecord.lobby-server", "lobby");
         this.sendDelayTicks = config.getInt("bungeecord.send-delay-ticks", 20);
 
-        // 5. Safe Restart
+        // 6. Safe Restart
         this.saveWorlds = config.getBoolean("safe-restart.save-worlds", true);
         this.kickPlayersBeforeShutdown = config.getBoolean("safe-restart.kick-players-before-shutdown", true);
         this.restartCommand = config.getString("safe-restart.restart-command", "restart");
         this.commandsBeforeRestart = config.getStringList("safe-restart.commands-before-restart");
 
-        // 6. Sound
+        // 7. Sound
         this.soundEnabled = config.getBoolean("sound.enabled", true);
         this.soundName = config.getString("sound.name", "BLOCK_NOTE_BLOCK_PLING");
         this.soundVolume = (float) config.getDouble("sound.volume", 1.0);
         this.soundPitch = (float) config.getDouble("sound.pitch", 1.2);
 
-        // 7. Load discord.yml
+        // 8. Load discord.yml
         loadDiscordConfig();
+    }
+
+    private ZoneId parseZoneId(String zoneInput) {
+        if (zoneInput == null || zoneInput.trim().isEmpty()) {
+            return ZoneId.of("Asia/Ho_Chi_Minh");
+        }
+        String trimmed = zoneInput.trim();
+        if ("SYSTEM".equalsIgnoreCase(trimmed) || "DEFAULT".equalsIgnoreCase(trimmed) || "AUTO".equalsIgnoreCase(trimmed)) {
+            return ZoneId.systemDefault();
+        }
+        if (trimmed.equalsIgnoreCase("VN") || trimmed.equalsIgnoreCase("VIETNAM") || trimmed.equalsIgnoreCase("VN_TZ")) {
+            return ZoneId.of("Asia/Ho_Chi_Minh");
+        }
+        // Handle GMT+7, UTC+7, +07:00, -05:00, etc.
+        if (trimmed.matches("(?i)^(GMT|UTC)?[+-]\\d{1,2}(:\\d{2})?$")) {
+            String normalized = trimmed.toUpperCase();
+            if (!normalized.startsWith("GMT") && !normalized.startsWith("UTC")) {
+                normalized = "GMT" + normalized;
+            } else if (normalized.startsWith("UTC")) {
+                normalized = "GMT" + normalized.substring(3);
+            }
+            try {
+                return ZoneId.of(normalized);
+            } catch (Exception ignored) {}
+        }
+        try {
+            return ZoneId.of(trimmed);
+        } catch (Exception e) {
+            plugin.getLogger().warning("[RoyAutoRestart] Invalid timezone: '" + zoneInput + "'. Falling back to 'Asia/Ho_Chi_Minh' (GMT+7).");
+            return ZoneId.of("Asia/Ho_Chi_Minh");
+        }
     }
 
     private void loadDiscordConfig() {
@@ -101,6 +140,10 @@ public class ConfigManager {
             plugin.saveResource("discord.yml", false);
         }
         this.discordConfig = YamlConfiguration.loadConfiguration(discordFile);
+    }
+
+    public ZoneId getZoneId() {
+        return zoneId != null ? zoneId : ZoneId.of("Asia/Ho_Chi_Minh");
     }
 
     public List<RestartTime> getRestartTimes() {

@@ -4,7 +4,10 @@ import com.github.athanh.royAutoRestart.models.RestartTime;
 import org.junit.jupiter.api.Test;
 
 import java.time.DayOfWeek;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -90,5 +93,34 @@ public class RestartTimeTest {
 
         assertTrue(daily.isMatch(matchTime));
         assertFalse(daily.isMatch(nonMatchTime));
+    }
+
+    @Test
+    public void testVietnamTimeZoneMatchOnUtcServer() {
+        // Assume the physical VPS is located in Germany/UK running in UTC
+        // When it is 05:00 UTC on 2026-08-23, in Vietnam (GMT+7) it is exactly 12:00 PM!
+        Instant nowUtc = Instant.parse("2026-08-23T05:00:00Z");
+        ZoneId vnZone = ZoneId.of("Asia/Ho_Chi_Minh");
+        ZonedDateTime vnTime = nowUtc.atZone(vnZone);
+
+        assertEquals(12, vnTime.getHour());
+        assertEquals(0, vnTime.getMinute());
+
+        RestartTime dailySchedule = new RestartTime("DAILY;12:00");
+        assertTrue(dailySchedule.isMatch(vnTime.toLocalDateTime()), "DAILY;12:00 should match 05:00 UTC when converted to Vietnam Time");
+    }
+
+    @Test
+    public void testCustomForeignTimezones() {
+        // Test New York (UTC-4 in summer DST)
+        Instant nowUtc = Instant.parse("2026-08-23T16:00:00Z");
+        ZoneId nyZone = ZoneId.of("America/New_York");
+        ZonedDateTime nyTime = nowUtc.atZone(nyZone);
+
+        assertEquals(12, nyTime.getHour());
+        assertEquals(0, nyTime.getMinute());
+
+        RestartTime nySchedule = new RestartTime("DAILY;12:00");
+        assertTrue(nySchedule.isMatch(nyTime.toLocalDateTime()), "DAILY;12:00 should match New York local time");
     }
 }

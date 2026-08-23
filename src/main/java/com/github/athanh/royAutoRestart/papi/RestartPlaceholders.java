@@ -86,7 +86,7 @@ public class RestartPlaceholders extends PlaceholderExpansion {
             return "N/A";
         }
 
-        Duration duration = Duration.between(LocalDateTime.now(), nextRestart);
+        Duration duration = Duration.between(plugin.getRestartManager().getNow(), nextRestart);
         if (duration.isNegative() || duration.isZero()) {
             return "0";
         }
@@ -142,7 +142,7 @@ public class RestartPlaceholders extends PlaceholderExpansion {
         if (nextRestart == null) {
             return "0";
         }
-        Duration duration = Duration.between(LocalDateTime.now(), nextRestart);
+        Duration duration = Duration.between(plugin.getRestartManager().getNow(), nextRestart);
         return String.valueOf(Math.max(0, duration.toSeconds()));
     }
 }

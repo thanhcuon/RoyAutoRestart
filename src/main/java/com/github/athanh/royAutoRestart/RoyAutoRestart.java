@@ -26,7 +26,7 @@ public final class RoyAutoRestart extends JavaPlugin {
         // Initialize Language and Config Managers
         this.languageManager = new LanguageManager(this);
         this.configManager = new ConfigManager(this, languageManager);
-        this.discordManager = new DiscordManager(this, configManager.getDiscordConfig());
+        this.discordManager = new DiscordManager(this, configManager.getDiscordConfig(), configManager.getZoneId());
 
         // Register BungeeCord outgoing channel if enabled
         if (configManager.isBungeecordEnabled()) {
@@ -79,7 +79,7 @@ public final class RoyAutoRestart extends JavaPlugin {
         }
 
         configManager.load();
-        discordManager.loadConfig(configManager.getDiscordConfig());
+        discordManager.loadConfig(configManager.getDiscordConfig(), configManager.getZoneId());
         restartManager = new RestartManager(this, configManager, languageManager, discordManager, taskScheduler);
 
         getLogger().info("[RoyAutoRestart] Configuration reloaded successfully.");
